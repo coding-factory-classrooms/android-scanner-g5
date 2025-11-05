@@ -1,7 +1,8 @@
 package com.example.scanner.features.detailGif
 
-import android.app.Activity
+import android.content.ContentValues.TAG
 import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,48 +23,82 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.example.scanner.ui.theme.ScannerTheme
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.scanner.features.gifList.Gif
+import com.example.scanner.features.gifList.sampleGif
+import okio.IOException
+
+@Composable
+fun DetailGifView(vm: DetailGifViewModel = viewModel()) {
+
+    val uiState by vm.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        Log.i(TAG, "DetailGifView: loadGif")
+        vm.loadGif()
+    }
+
+    Scaffold { innerPadding ->
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+        ) {
+            DetailGifViewBody(uiState)
+        }
+    }
+}
 
 
 @Composable
-fun DetailGifView() {
-
+fun DetailGifViewBody(uiState: GifUiState) {
     val activity = LocalActivity.current
-    Scaffold() { innerPadding ->
+
+    Scaffold { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(padding)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(text = "Page détail Gif", fontSize = 20.sp)
 
-//            Button( onClick = ) {
-//                Text("Fav")
-//            }
+            when (uiState) {
+                GifUiState.Loading -> {
+                    CircularProgressIndicator()
+                    Text("loading")
+                }
 
-            GifAnime("https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExamd4Zzlwa3Z3YzZ2cmc5eGpoNWRtcHVwbWNrcXAyaWg0dTdlaW0zciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lS6PdcHrKAsjoBql8J/giphy.gif")
+                is GifUiState.Failure -> {
+                    Text("Exeption${uiState.message}")
+                }
 
-            Text("title")
+                is GifUiState.Success -> {
+                    Text("Page détail Gif", fontSize = 20.sp)
 
-            Text("Date d'importation :")
+                    GifAnime(uiState.gif.url)
 
-            Button( onClick = {
-                activity?.finish()
-            }) {
-                Text("Back")
+                    Text(text = uiState.gif.title)
+
+                    Text("Date d'importation : ${uiState.gif.date}")
+
+                    Button(onClick = { activity?.finish() }) {
+                        Text("B")
+                    }
+                }
             }
-
-//            Button( onClick = ) {
-//                Text("Delete")
-//            }
-
         }
-
     }
 }
-
 
 @Composable
 fun GifAnime(url: String, modifier: Modifier = Modifier) {
@@ -80,13 +115,23 @@ fun GifAnime(url: String, modifier: Modifier = Modifier) {
         contentDescription = null,
         modifier = modifier
     )
+}
 
+class StatePreviewProvider : PreviewParameterProvider<GifUiState> {
+    override val values: Sequence<GifUiState>
+        get() = sequenceOf(
+            GifUiState.Loading,
+            GifUiState.Success(sampleGif),
+            GifUiState.Failure("Error"),
+        )
 }
 
 @Preview
 @Composable
-fun DetailGifViewPreview(){
+fun DetailGifViewPreview(
+    @PreviewParameter(StatePreviewProvider::class) uiState: GifUiState,
+    ){
     ScannerTheme() {
-        DetailGifView()
+        DetailGifViewBody(uiState)
     }
 }

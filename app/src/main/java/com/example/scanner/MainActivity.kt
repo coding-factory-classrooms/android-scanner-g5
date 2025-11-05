@@ -30,8 +30,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Paper.init(this)
-
         enableEdgeToEdge()
         setContent {
             ScannerTheme {
