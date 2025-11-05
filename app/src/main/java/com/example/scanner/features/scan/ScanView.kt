@@ -1,39 +1,86 @@
 package com.example.scanner.features.scan
 
-import androidx.compose.foundation.layout.Arrangement
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.util.Base64
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.scanner.ui.theme.ScannerTheme
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import java.io.ByteArrayOutputStream
 
 @Composable
-fun ScanView() {
-    Scaffold() { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(text = "Page scan", fontSize = 20.sp)
+fun CameraCaptureButton(
+    modifier: Modifier = Modifier,
+    text: String = "Prendre une photo",
+    onResult: (base64: String) -> Unit,
+    onError: ((String) -> Unit)? = null
+) {
+    val context = LocalContext.current
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) { bitmap: Bitmap? ->
+        if (bitmap == null) {
+            onError?.invoke("Aucune image")
+            return@rememberLauncherForActivityResult
         }
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+        val base64 = Base64.encodeToString(stream.toByteArray(), Base64.DEFAULT)
+        onResult(base64)
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) cameraLauncher.launch(null)
+        else onError?.invoke("Permission caméra refusée")
+    }
+
+    Button(modifier = modifier, onClick = {
+        val granted = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (granted) cameraLauncher.launch(null)
+        else permissionLauncher.launch(Manifest.permission.CAMERA)
+    }) {
+        Text(text = text)
     }
 }
 
-@Preview
 @Composable
-fun ScanViewPreview(){
-    ScannerTheme() {
-        ScanView()
+fun ScanView() {
+    var base64 by remember { mutableStateOf<String?>(null) }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    Scaffold { padding ->
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            CameraCaptureButton(onResult = {
+                base64 = it
+                error = null
+            }, onError = { err ->
+                error = err
+            })
+
+            error?.let { Text(text = "Erreur: $it") }
+
+            base64?.let {
+                // On affiche juste un aperçu court pour ne pas polluer l'UI
+                val preview = if (it.length > 120) it.take(120) + "..." else it
+                Text(text = "Base64 (aperçu): $preview")
+            }
+        }
     }
 }

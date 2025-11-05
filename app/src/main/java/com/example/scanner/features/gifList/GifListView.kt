@@ -1,13 +1,6 @@
 package com.example.scanner.features.gifList
 
-import android.content.ContentValues.TAG
-import android.content.Intent
-import android.os.Build
 import android.util.Log
-import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.scanner.features.scan.CameraCaptureButton
 import com.example.scanner.ui.theme.ScannerTheme
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -149,7 +143,16 @@ fun GifListView(vm: GifListViewModel = viewModel()) {
                     }
                 }
             }
-            //GifGrid(samplesGif)
+            CameraCaptureButton(
+                modifier = Modifier,
+                text = "Open Cam",
+                onResult = { base64 ->
+                    TODO()
+                },
+                onError = { error ->
+                    TODO()
+                }
+            )
         }
     }
 }
