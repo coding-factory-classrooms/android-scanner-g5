@@ -6,15 +6,21 @@ import android.graphics.Bitmap
 import android.util.Base64
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import java.io.ByteArrayOutputStream
 
@@ -26,6 +32,9 @@ fun CameraCaptureButton(
     onError: ((String) -> Unit)? = null
 ) {
     val context = LocalContext.current
+
+    val defaultSize = 56.dp
+    val finalModifier = Modifier.size(defaultSize).then(modifier)
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
@@ -47,40 +56,24 @@ fun CameraCaptureButton(
         else onError?.invoke("Permission caméra refusée")
     }
 
-    Button(modifier = modifier, onClick = {
-        val granted = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
+    Button(
+        modifier = finalModifier,
+        shape = CircleShape,
+        contentPadding = PaddingValues(0.dp),
+        onClick = {
+            val granted = ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
 
-        if (granted) cameraLauncher.launch(null)
-        else permissionLauncher.launch(Manifest.permission.CAMERA)
-    }) {
-        Text(text = text)
-    }
-}
-
-@Composable
-fun ScanView() {
-    var base64 by remember { mutableStateOf<String?>(null) }
-    var error by remember { mutableStateOf<String?>(null) }
-
-    Scaffold { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
-            CameraCaptureButton(onResult = {
-                base64 = it
-                error = null
-            }, onError = { err ->
-                error = err
-            })
-
-            error?.let { Text(text = "Erreur: $it") }
-
-            base64?.let {
-                // On affiche juste un aperçu court pour ne pas polluer l'UI
-                val preview = if (it.length > 120) it.take(120) + "..." else it
-                Text(text = "Base64 (aperçu): $preview")
-            }
+            if (granted) cameraLauncher.launch(null)
+            else permissionLauncher.launch(Manifest.permission.CAMERA)
         }
+    ) {
+        Icon(
+            imageVector = Icons.Filled.CameraAlt,
+            contentDescription = text,
+            modifier = Modifier.size(24.dp)
+        )
     }
 }
