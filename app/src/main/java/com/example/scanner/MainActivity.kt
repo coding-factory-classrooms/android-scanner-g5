@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -15,14 +16,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
+
+import com.example.scanner.features.gifList.GifListView
+
 import com.example.scanner.features.detailGif.DetailGifActivity
 import com.example.scanner.features.detailGif.DetailGifView
+
 import com.example.scanner.ui.theme.ScannerTheme
 import io.paperdb.Paper
 
@@ -33,6 +39,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ScannerTheme {
+
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
                         modifier = Modifier
@@ -44,6 +52,7 @@ class MainActivity : ComponentActivity() {
 
                     }
                 }
+
             }
         }
     }
@@ -87,4 +96,5 @@ fun GifAnime(url: String, modifier: Modifier = Modifier) {
         }) {
             Text("Move to Detail Gif")
         }
+
 }
