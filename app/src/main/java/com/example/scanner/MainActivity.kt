@@ -1,5 +1,6 @@
 package com.example.scanner
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -28,6 +29,7 @@ import com.example.scanner.features.gifList.GifListView
 
 import com.example.scanner.features.detailGif.DetailGifActivity
 import com.example.scanner.features.detailGif.DetailGifView
+import com.example.scanner.features.gifList.GifListActivity
 
 import com.example.scanner.ui.theme.ScannerTheme
 import io.paperdb.Paper
@@ -49,7 +51,7 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         GifAnime("https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExamd4Zzlwa3Z3YzZ2cmc5eGpoNWRtcHVwbWNrcXAyaWg0dTdlaW0zciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lS6PdcHrKAsjoBql8J/giphy.gif")
-
+                        buttonList()
                     }
                 }
 
@@ -58,22 +60,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ScannerTheme {
-        GifAnime("https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExamd4Zzlwa3Z3YzZ2cmc5eGpoNWRtcHVwbWNrcXAyaWg0dTdlaW0zciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lS6PdcHrKAsjoBql8J/giphy.gif")
-
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    ScannerTheme {
+//    }
+//}
 
 @Composable
 fun GifAnime(url: String, modifier: Modifier = Modifier) {
@@ -89,12 +81,19 @@ fun GifAnime(url: String, modifier: Modifier = Modifier) {
                 .build(),
             contentDescription = null,
             modifier = modifier
+                .fillMaxWidth(),
+            contentScale = ContentScale.FillWidth
         )
-        Button( onClick = {
-            val intent = Intent(context, DetailGifActivity::class.java)
-            context.startActivity(intent)
-        }) {
-            Text("Move to Detail Gif")
-        }
+}
 
+@Composable
+private fun buttonList() {
+    val context = LocalContext.current
+
+    Button(onClick = {
+        val intent = Intent(context, GifListActivity::class.java)
+        context.startActivity(intent)
+    }) {
+        Text("Move to List Gif")
+    }
 }
