@@ -6,10 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.scanner.features.detailGif.DetailGifView
 import com.example.scanner.ui.theme.ScannerTheme
+import io.paperdb.Paper
 
 class GifListActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Paper.init(this)
 
         enableEdgeToEdge()
         setContent {
