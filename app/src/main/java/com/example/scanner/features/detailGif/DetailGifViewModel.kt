@@ -16,16 +16,20 @@ class DetailGifViewModel: ViewModel() {
     val gifFlow = MutableStateFlow<Gif?>(null)
     val uiState = MutableStateFlow<GifUiState>(GifUiState.Loading)
 
-    fun loadGif(){
+    fun loadGif(gifId : String){
 
-        //uiState.value = GifUiState.Loading
+        uiState.value = GifUiState.Loading
 
-        uiState.value = GifUiState.Success(
-            gif = sampleGif
-        )
+        val gif = samplesGif.find{it.id == gifId}
 
-        //gifFlow.value = sampleGif
-
+        if (gif == null) {
+            uiState.value = GifUiState.Failure("error")
+        }
+        else {
+            uiState.value = GifUiState.Success(
+                gif = gif
+            )
+        }
     }
 
 

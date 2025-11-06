@@ -37,13 +37,13 @@ import com.example.scanner.features.gifList.sampleGif
 import okio.IOException
 
 @Composable
-fun DetailGifView(vm: DetailGifViewModel = viewModel()) {
+fun DetailGifView(vm: DetailGifViewModel = viewModel(), gifId: String) {
 
     val uiState by vm.uiState.collectAsState()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(gifId) {
         Log.i(TAG, "DetailGifView: loadGif")
-        vm.loadGif()
+        vm.loadGif(gifId)
     }
 
     Scaffold { innerPadding ->

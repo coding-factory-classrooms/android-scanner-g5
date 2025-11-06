@@ -12,10 +12,10 @@ data class Gif (
 
 val samplesGif = listOf(
     Gif(id = "1", title = "Eren", url = "https://i.redd.it/vjtnz6zrd79f1.gif", date = Date()),
-    Gif(id = "1", title = "Eren", url = "https://i.redd.it/vjtnz6zrd79f1.gif", date = Date()),
-    Gif(id = "1", title = "Eren", url = "https://i.redd.it/vjtnz6zrd79f1.gif", date = Date()),
-    Gif(id = "1", title = "Eren", url = "https://i.redd.it/vjtnz6zrd79f1.gif", date = Date()),
-    Gif(id = "1", title = "Eren", url = "https://i.redd.it/vjtnz6zrd79f1.gif", date = Date()),
+    Gif(id = "2", title = "Armin", url = "https://i.redd.it/vjtnz6zrd79f1.gif", date = Date()),
+    Gif(id = "3", title = "Chaozu", url = "https://i.redd.it/vjtnz6zrd79f1.gif", date = Date()),
+    Gif(id = "4", title = "Erieu", url = "https://i.redd.it/vjtnz6zrd79f1.gif", date = Date()),
+    Gif(id = "5", title = "Siegyou", url = "https://i.redd.it/vjtnz6zrd79f1.gif", date = Date()),
 )
 
 val sampleGif = (

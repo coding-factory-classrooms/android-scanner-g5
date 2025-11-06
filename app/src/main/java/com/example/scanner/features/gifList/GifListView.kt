@@ -1,8 +1,10 @@
 package com.example.scanner.features.gifList
 
+import android.content.Intent
 import android.os.Build
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,10 +39,16 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.example.scanner.GifAnime
+import com.example.scanner.features.detailGif.DetailGifActivity
 
 @Composable
-fun GifCard(gif: Gif) {
-    Card {
+fun GifCard(gif: Gif, onClick: (String) -> Unit) {
+    Card (
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable{onClick(gif.id)}
+            .padding(4.dp)
+    ) {
         Column(Modifier.fillMaxWidth().padding(16.dp)) {
             GifAnime(
                 url = gif.url,
@@ -53,6 +61,7 @@ fun GifCard(gif: Gif) {
 
 @Composable
 fun GifListBody(gifs: List<Gif>, innerPadding: PaddingValues){
+    val context = LocalContext.current
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -61,7 +70,12 @@ fun GifListBody(gifs: List<Gif>, innerPadding: PaddingValues){
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         items(items = gifs) { gif ->
-            GifCard(gif)
+            GifCard(gif, onClick = { id ->
+                val intent = Intent(context, DetailGifActivity::class.java)
+                intent.putExtra("gifId", id)
+                context.startActivity(intent)
+                println("click")
+            })
         }
     }
 }
@@ -77,7 +91,9 @@ fun GifGrid(gifs: List<Gif>) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(gifs) { gif ->
-            GifCard(gif = gif)
+            GifCard(gif = gif, onClick = { id ->
+                println("click")
+            })
         }
     }
 }

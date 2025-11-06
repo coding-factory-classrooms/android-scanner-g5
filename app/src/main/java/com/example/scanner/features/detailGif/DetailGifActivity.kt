@@ -10,10 +10,12 @@ class DetailGifActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val id = intent.getStringExtra("gifId") ?: ""
+
         enableEdgeToEdge()
         setContent {
             ScannerTheme {
-                DetailGifView()
+                DetailGifView(gifId = id)
             }
         }
     }
