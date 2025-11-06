@@ -81,6 +81,8 @@ fun GifAnime(url: String, modifier: Modifier = Modifier) {
                 .build(),
             contentDescription = null,
             modifier = modifier
+                .fillMaxWidth(),
+            contentScale = ContentScale.FillWidth
         )
 }
 
