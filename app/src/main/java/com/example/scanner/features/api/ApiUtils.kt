@@ -2,6 +2,7 @@ package com.example.scanner.features.api
 
 
 import android.util.Log
+import io.paperdb.Paper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -70,14 +71,15 @@ class ApiUtils() {
             key = "VDIEptOWtTjRGFWClKIQ5O5gzR3PxD7i",
             text = text
         )
-        call.enqueue(object : Callback<GifList> {
+        call.enqueue(object : Callback<List<Gif>> {
 
-            override fun onResponse(call: Call<GifList>, response: Response<GifList>) {
+            override fun onResponse(call: Call<List<Gif>>, response: Response<List<Gif>>) {
                 val gif = response.body()!!
+                Paper.book().write<List<Gif>>("gifs", gif)
                 Log.i("package:mine", "onResponse: $gif")
             }
 
-            override fun onFailure(call: Call<GifList>, t: Throwable) {
+            override fun onFailure(call: Call<List<Gif>>, t: Throwable) {
                 Log.e("package:mine", "onFailure: ", t)
             }
 

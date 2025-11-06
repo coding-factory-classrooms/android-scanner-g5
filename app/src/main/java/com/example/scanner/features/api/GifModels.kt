@@ -2,11 +2,6 @@ package com.example.scanner.features.api
 
 import com.google.gson.annotations.SerializedName
 
-
-data class GifList(
-    val data: List<Gif>,
-)
-
 data class Gif (
     val id: String,
     val url: String,
