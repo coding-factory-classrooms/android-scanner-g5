@@ -38,6 +38,7 @@ import com.example.scanner.features.api.Gif
 import com.example.scanner.features.detailGif.DetailGifActivity
 import com.example.scanner.features.scan.CameraCaptureButton
 import com.example.scanner.ui.theme.ScannerTheme
+import kotlin.collections.mutableListOf
 
 @Composable
 fun GifCard(gif: Gif, onClick: (String) -> Unit) {
@@ -58,7 +59,7 @@ fun GifCard(gif: Gif, onClick: (String) -> Unit) {
 }
 
 @Composable
-fun GifListBody(gifs: List<Gif>, innerPadding: PaddingValues){
+fun GifListBody(gifs: MutableList<Gif>, innerPadding: PaddingValues){
     val context = LocalContext.current
     LazyColumn(
         modifier = Modifier
@@ -80,7 +81,7 @@ fun GifListBody(gifs: List<Gif>, innerPadding: PaddingValues){
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun GifGrid(gifs: List<Gif>) {
+fun GifGrid(gifs: MutableList<Gif>) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2), // 2 colonnes
         modifier = Modifier.fillMaxSize(),

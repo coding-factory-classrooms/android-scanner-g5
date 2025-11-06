@@ -15,6 +15,6 @@ interface GiphyApi {
         @Query("offset") offset: Int = 0,
         @Query("lang") lang: String = "en",
         @Query("bundle") bundle: String = "messaging_non_clips",
-        ): Call<List<Gif>>
+        ): Call<GifList>
 
 }

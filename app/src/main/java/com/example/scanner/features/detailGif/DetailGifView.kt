@@ -19,7 +19,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -32,6 +38,9 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.example.scanner.features.api.sampleGif
 import com.example.scanner.ui.theme.ScannerTheme
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun DetailGifView(vm: DetailGifViewModel = viewModel(), gifId: String) {
@@ -59,6 +68,18 @@ fun DetailGifView(vm: DetailGifViewModel = viewModel(), gifId: String) {
 fun DetailGifViewBody(uiState: GifUiState) {
     val activity = LocalActivity.current
 
+    // Helper to format epoch millis into a readable date/time string
+    fun formatUpdatedAt(updatedAt: Long?): String {
+        return updatedAt?.let {
+            try {
+                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                sdf.format(Date(it))
+            } catch (e: Exception) {
+                it.toString()
+            }
+        } ?: "N/A"
+    }
+
     Scaffold { padding ->
         Column(
             modifier = Modifier
@@ -82,14 +103,28 @@ fun DetailGifViewBody(uiState: GifUiState) {
                 is GifUiState.Success -> {
                     Text("Page détail Gif", fontSize = 20.sp)
 
-                    GifAnime(uiState.gif.url)
+//                    GifAnime(uiState.gif.url)
 
-                    Text(text = uiState.gif.title)
+                    Text(
+                        buildAnnotatedString {
+                            withLink(
+                                LinkAnnotation.Url(
+                                    uiState.gif.url,
+                                    TextLinkStyles(style = SpanStyle(color = Color.Blue))
+                                )
+                            ) {
+                                append(uiState.gif.title)
+                            }
+
+                        }
+                    )
 
                     Text("Date d'importation : ${uiState.gif.importDatetime}")
 
+                    Text("Updated : ${formatUpdatedAt(uiState.gif.updatedAt)}")
+
                     Button(onClick = { activity?.finish() }) {
-                        Text("B")
+                        Text("Back to list")
                     }
                 }
             }
