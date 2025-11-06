@@ -1,6 +1,5 @@
 package com.example.scanner
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -19,20 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
-
-import com.example.scanner.features.gifList.GifListView
-
-import com.example.scanner.features.detailGif.DetailGifActivity
-import com.example.scanner.features.detailGif.DetailGifView
 import com.example.scanner.features.gifList.GifListActivity
-
 import com.example.scanner.ui.theme.ScannerTheme
-import io.paperdb.Paper
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +42,7 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         GifAnime("https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExamd4Zzlwa3Z3YzZ2cmc5eGpoNWRtcHVwbWNrcXAyaWg0dTdlaW0zciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lS6PdcHrKAsjoBql8J/giphy.gif")
-                        buttonList()
+                        ButtonList()
                     }
                 }
 
@@ -87,7 +78,7 @@ fun GifAnime(url: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun buttonList() {
+private fun ButtonList() {
     val context = LocalContext.current
 
     Button(onClick = {

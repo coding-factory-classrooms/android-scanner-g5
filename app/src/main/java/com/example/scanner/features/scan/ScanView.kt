@@ -10,18 +10,19 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,9 @@ fun CameraCaptureButton(
 
     val defaultSize = 56.dp
     val finalModifier = Modifier.size(defaultSize).then(modifier)
+
+    // Valeur par défaut : petit PNG 1x1 encodé en base64 (image neutre et très légère).
+    val defaultBase64Image = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII="
 
     var lastBase64 by remember { mutableStateOf<String?>(null) }
 
@@ -78,7 +82,9 @@ fun CameraCaptureButton(
                 onLongClick = {
                     val current = lastBase64
                     if (current != null) onResult(current)
-                    else onError?.invoke("Aucune image capturée à renvoyer")
+                    else {
+                        onResult(defaultBase64Image)
+                    }
                 }
             ),
         shape = CircleShape,
