@@ -1,11 +1,7 @@
 package com.example.scanner.features.api
 
-import android.os.Bundle
-import com.example.scanner.features.gifList.Gif
-import com.example.scanner.features.gifList.GifList
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GiphyApi {

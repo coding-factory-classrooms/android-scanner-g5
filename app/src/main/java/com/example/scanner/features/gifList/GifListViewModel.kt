@@ -2,11 +2,9 @@ package com.example.scanner.features.gifList
 
 import androidx.lifecycle.ViewModel
 import com.example.scanner.features.api.ApiUtils
-import com.example.scanner.features.api.GiphyApi
+import com.example.scanner.features.api.Gif
+import com.example.scanner.features.api.samplesGif
 import kotlinx.coroutines.flow.MutableStateFlow
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 sealed class GifListUiState {
     data object Loading : GifListUiState()
@@ -18,8 +16,6 @@ class GifListViewModel: ViewModel() {
     val gifFlow = MutableStateFlow<List<Gif>>(emptyList())
     val uiState = MutableStateFlow<GifListUiState>(GifListUiState.Loading)
 
-
-
     fun loadGif(){
 
         //call api
@@ -30,9 +26,10 @@ class GifListViewModel: ViewModel() {
         uiState.value = GifListUiState.Success(gifs=gifs)
     }
 
-    fun test() {
+    fun getGifByImage(base64Image : String) {
        // if (api.)
         val apiUtils = ApiUtils()
-        apiUtils.searchGif("ice")
+
+        apiUtils.searchVision(base64Image)
     }
 }

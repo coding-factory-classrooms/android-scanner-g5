@@ -1,4 +1,4 @@
-package com.example.scanner.features.gifList
+package com.example.scanner.features.api
 
 import com.google.gson.annotations.SerializedName
 
