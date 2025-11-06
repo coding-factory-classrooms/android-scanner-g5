@@ -86,7 +86,7 @@ fun DetailGifViewBody(uiState: GifUiState) {
 
                     Text(text = uiState.gif.title)
 
-                    Text("Date d'importation : ${uiState.gif.date}")
+                    Text("Date d'importation : ${uiState.gif.importDatetime}")
 
                     Button(onClick = { activity?.finish() }) {
                         Text("B")

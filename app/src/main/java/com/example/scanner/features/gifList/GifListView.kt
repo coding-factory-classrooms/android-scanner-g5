@@ -135,7 +135,7 @@ fun GifListView(vm: GifListViewModel = viewModel()) {
                 modifier = Modifier.align(Alignment.BottomEnd),
                 text = "Open Cam",
                 onResult = { base64 ->
-
+                    vm.test()
                     Log.d("GifListView", "Image capture (base64 length=${base64.length})")
                 },
                 onError = { error ->

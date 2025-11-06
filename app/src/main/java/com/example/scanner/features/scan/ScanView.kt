@@ -80,6 +80,7 @@ fun CameraCaptureButton(
                     else permissionLauncher.launch(Manifest.permission.CAMERA)
                 },
                 onLongClick = {
+                    println("LE CLIC EST LONG")
                     val current = lastBase64
                     if (current != null) onResult(current)
                     else {
