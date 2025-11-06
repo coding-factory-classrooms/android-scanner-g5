@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -35,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.scanner.GifAnime
+import com.example.scanner.features.api.Gif
 import com.example.scanner.features.detailGif.DetailGifActivity
 import com.example.scanner.features.scan.CameraCaptureButton
 import com.example.scanner.ui.theme.ScannerTheme
@@ -135,7 +135,7 @@ fun GifListView(vm: GifListViewModel = viewModel()) {
                 modifier = Modifier.align(Alignment.BottomEnd),
                 text = "Open Cam",
                 onResult = { base64 ->
-
+                    vm.getGifByImage(base64)
                     Log.d("GifListView", "Image capture (base64 length=${base64.length})")
                 },
                 onError = { error ->

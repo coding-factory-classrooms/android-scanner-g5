@@ -30,7 +30,7 @@ import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
-import com.example.scanner.features.gifList.sampleGif
+import com.example.scanner.features.api.sampleGif
 import com.example.scanner.ui.theme.ScannerTheme
 
 @Composable
@@ -86,7 +86,7 @@ fun DetailGifViewBody(uiState: GifUiState) {
 
                     Text(text = uiState.gif.title)
 
-                    Text("Date d'importation : ${uiState.gif.date}")
+                    Text("Date d'importation : ${uiState.gif.importDatetime}")
 
                     Button(onClick = { activity?.finish() }) {
                         Text("B")

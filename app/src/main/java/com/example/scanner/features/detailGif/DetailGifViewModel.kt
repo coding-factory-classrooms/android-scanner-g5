@@ -1,9 +1,8 @@
 package com.example.scanner.features.detailGif
 
 import androidx.lifecycle.ViewModel
-import com.example.scanner.features.gifList.Gif
-import com.example.scanner.features.gifList.sampleGif
-import com.example.scanner.features.gifList.samplesGif
+import com.example.scanner.features.api.Gif
+import com.example.scanner.features.api.samplesGif
 import kotlinx.coroutines.flow.MutableStateFlow
 
 sealed class GifUiState{
