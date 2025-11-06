@@ -1,8 +1,9 @@
 package com.example.scanner.features.detailGif
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.scanner.features.api.Gif
-import com.example.scanner.features.api.samplesGif
+import io.paperdb.Paper
 import kotlinx.coroutines.flow.MutableStateFlow
 
 sealed class GifUiState{
@@ -19,7 +20,12 @@ class DetailGifViewModel: ViewModel() {
 
         uiState.value = GifUiState.Loading
 
-        val gif = samplesGif.find{it.id == gifId}
+        val gifs = Paper.book().read<MutableList<Gif>>("gifs") ?: mutableListOf()
+
+        Log.i("package:mine", "loadGif: looking for gif with id $gifId")
+        val gif = gifs.find{it.id == gifId}
+
+        Log.i("package:mine", "loadGif: found gif: $gif")
 
         if (gif == null) {
             uiState.value = GifUiState.Failure("error")

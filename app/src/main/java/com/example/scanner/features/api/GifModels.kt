@@ -2,9 +2,8 @@ package com.example.scanner.features.api
 
 import com.google.gson.annotations.SerializedName
 
-
-data class GifList(
-    val data: List<Gif>,
+data class GifList (
+    val data: MutableList<Gif>
 )
 
 data class Gif (
@@ -12,7 +11,8 @@ data class Gif (
     val url: String,
     val title: String,
     @SerializedName("import_datetime")
-    val importDatetime: String
+    val importDatetime: String,
+    val updatedAt: Long? = null
 )
 
 val samplesGif = listOf(

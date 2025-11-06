@@ -24,11 +24,13 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.example.scanner.features.gifList.GifListActivity
 import com.example.scanner.ui.theme.ScannerTheme
+import io.paperdb.Paper
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Paper.init(this)
 
         enableEdgeToEdge()
         setContent {

@@ -2,6 +2,7 @@ package com.example.scanner.features.api
 
 
 import android.util.Log
+import io.paperdb.Paper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,7 +27,8 @@ class ApiUtils() {
     val apiVision = retrofitVision.create(VisionApi::class.java)
 
 
-    fun searchVision(base64Image : String) {
+    // onComplete callback reports whether the flow ended successfully (true) or failed (false)
+    fun searchVision(base64Image : String, onComplete: (Boolean) -> Unit = {}) {
 
         val request = VisionRequest(
             requests = listOf(
@@ -50,7 +52,8 @@ class ApiUtils() {
             ) {
                 val visionResponse = response.body()!!
                 Log.i("package:mine", "onResponse: $visionResponse")
-                searchGif(visionResponse.responses[0].labelAnnotations[0].description)
+                // forward the onComplete to searchGif so it can notify when done
+                searchGif(visionResponse.responses[0].labelAnnotations[0].description, onComplete)
             }
 
             override fun onFailure(
@@ -58,12 +61,13 @@ class ApiUtils() {
                 t: Throwable
             ) {
                 Log.e("package:mine", "onFailure: ", t)
+                onComplete(false)
             }
 
         })
     }
 
-    fun searchGif(text : String) {
+    fun searchGif(text : String, onComplete: (Boolean) -> Unit = {}) {
 
         // Call api
         val call = apiGiphy.getGif(
@@ -73,12 +77,40 @@ class ApiUtils() {
         call.enqueue(object : Callback<GifList> {
 
             override fun onResponse(call: Call<GifList>, response: Response<GifList>) {
-                val gif = response.body()!!
-                Log.i("package:mine", "onResponse: $gif")
+                val body = response.body()
+                val gifsFromApi: MutableList<Gif> = body?.data ?: mutableListOf()
+
+                val firstGif = gifsFromApi.firstOrNull()
+                if (firstGif == null) {
+                    Log.i("package:mine", "onResponse: no gifs in API response")
+                    onComplete(false)
+                    return
+                }
+
+                val existing: MutableList<Gif> = Paper.book().read<MutableList<Gif>>("gifs") ?: mutableListOf()
+
+                val alreadyExists = existing.any { it.id == firstGif.id }
+                if (alreadyExists) {
+                    val now = System.currentTimeMillis()
+                    val updatedList = existing.map { gif ->
+                        if (gif.id == firstGif.id) gif.copy(updatedAt = now) else gif
+                    }.toMutableList()
+                    Paper.book().write("gifs", updatedList)
+                    Log.i("package:mine", "onResponse: gif already present - updated 'updatedAt' for ${firstGif.id}")
+                    onComplete(true)
+                } else {
+                    val now = System.currentTimeMillis()
+                    val gifToAdd = firstGif.copy(updatedAt = now)
+                    existing.add(0, gifToAdd)
+                    Paper.book().write("gifs", existing)
+                    Log.i("package:mine", "onResponse: added first gif ${firstGif.id} to store (new size=${existing.size})")
+                    onComplete(true)
+                }
             }
 
             override fun onFailure(call: Call<GifList>, t: Throwable) {
                 Log.e("package:mine", "onFailure: ", t)
+                onComplete(false)
             }
 
         })
