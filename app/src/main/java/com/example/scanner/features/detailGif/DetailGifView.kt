@@ -41,6 +41,7 @@ import com.example.scanner.ui.theme.ScannerTheme
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun DetailGifView(vm: DetailGifViewModel = viewModel(), gifId: String) {
@@ -72,12 +73,40 @@ fun DetailGifViewBody(uiState: GifUiState) {
     fun formatUpdatedAt(updatedAt: Long?): String {
         return updatedAt?.let {
             try {
-                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE)
                 sdf.format(Date(it))
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 it.toString()
             }
         } ?: "N/A"
+    }
+
+    fun relativeTime(updatedAt: Long?): String {
+        if (updatedAt == null) return "N/A"
+        val now = System.currentTimeMillis()
+        val diff = now - updatedAt
+        if (diff < 0) return "Dans le futur !!!"
+
+        val days = TimeUnit.MILLISECONDS.toDays(diff)
+        val hours = TimeUnit.MILLISECONDS.toHours(diff)
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(diff)
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(diff)
+
+        return when {
+            days > 0 -> {
+                if (days == 1L) "il y a 1 jour" else "il y a ${days} jours"
+            }
+            hours > 0 -> {
+                if (hours == 1L) "il y a 1 heure" else "il y a ${hours} heures"
+            }
+            minutes > 0 -> {
+                if (minutes == 1L) "il y a 1 minute" else "il y a ${minutes} minutes"
+            }
+            seconds >= 0 -> {
+                if (seconds <= 1L) "à l'instant" else "il y a ${seconds} secondes"
+            }
+            else -> "N/A"
+        }
     }
 
     Scaffold { padding ->
@@ -122,6 +151,7 @@ fun DetailGifViewBody(uiState: GifUiState) {
                     Text("Date d'importation : ${uiState.gif.importDatetime}")
 
                     Text("Updated : ${formatUpdatedAt(uiState.gif.updatedAt)}")
+                    Text("(${relativeTime(uiState.gif.updatedAt)})")
 
                     Button(onClick = { activity?.finish() }) {
                         Text("Back to list")

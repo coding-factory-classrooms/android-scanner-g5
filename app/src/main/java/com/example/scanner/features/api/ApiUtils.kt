@@ -28,7 +28,8 @@ class ApiUtils() {
 
 
     // onComplete callback reports whether the flow ended successfully (true) or failed (false)
-    fun searchVision(base64Image : String, onComplete: (Boolean) -> Unit = {}) {
+    // and returns the current gifs list (if available) so callers can update UI immediately.
+    fun searchVision(base64Image : String, onComplete: (Boolean, MutableList<Gif>?) -> Unit = {_,_->}) {
 
         val request = VisionRequest(
             requests = listOf(
@@ -61,13 +62,14 @@ class ApiUtils() {
                 t: Throwable
             ) {
                 Log.e("package:mine", "onFailure: ", t)
-                onComplete(false)
+                onComplete(false, null)
             }
 
         })
     }
 
-    fun searchGif(text : String, onComplete: (Boolean) -> Unit = {}) {
+    // onComplete now returns (success, updatedList?)
+    fun searchGif(text : String, onComplete: (Boolean, MutableList<Gif>?) -> Unit = {_,_->}) {
 
         // Call api
         val call = apiGiphy.getGif(
@@ -83,11 +85,20 @@ class ApiUtils() {
                 val firstGif = gifsFromApi.firstOrNull()
                 if (firstGif == null) {
                     Log.i("package:mine", "onResponse: no gifs in API response")
-                    onComplete(false)
+                    onComplete(false, null)
                     return
                 }
 
-                val existing: MutableList<Gif> = Paper.book().read<MutableList<Gif>>("gifs") ?: mutableListOf()
+                // Read existing in a defensive way: try to read a list, or a GifList wrapper, or return empty
+                val existingRaw = Paper.book().read<Any>("gifs")
+                val existing: MutableList<Gif> = when (existingRaw) {
+                    is MutableList<*> -> {
+                        // Safe cast of elements
+                        existingRaw.filterIsInstance<Gif>().toMutableList()
+                    }
+                    is GifList -> existingRaw.data.toMutableList()
+                    else -> mutableListOf()
+                }
 
                 val alreadyExists = existing.any { it.id == firstGif.id }
                 if (alreadyExists) {
@@ -97,20 +108,20 @@ class ApiUtils() {
                     }.toMutableList()
                     Paper.book().write("gifs", updatedList)
                     Log.i("package:mine", "onResponse: gif already present - updated 'updatedAt' for ${firstGif.id}")
-                    onComplete(true)
+                    onComplete(true, updatedList)
                 } else {
                     val now = System.currentTimeMillis()
                     val gifToAdd = firstGif.copy(updatedAt = now)
                     existing.add(0, gifToAdd)
                     Paper.book().write("gifs", existing)
                     Log.i("package:mine", "onResponse: added first gif ${firstGif.id} to store (new size=${existing.size})")
-                    onComplete(true)
+                    onComplete(true, existing)
                 }
             }
 
             override fun onFailure(call: Call<GifList>, t: Throwable) {
                 Log.e("package:mine", "onFailure: ", t)
-                onComplete(false)
+                onComplete(false, null)
             }
 
         })
