@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         Paper.init(this)
+        Paper.book().destroy()
 
         enableEdgeToEdge()
         setContent {
