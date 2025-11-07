@@ -19,10 +19,12 @@ class GifListViewModel: ViewModel() {
 
     fun loadGif(){
 
-        val gifs = Paper.book().read<MutableList<Gif>>("gifs") ?: mutableListOf()
+        val gifs = Paper.book().read("gifs", mutableListOf<Gif>())
         Log.i("package:mine", "loadGif: ${gifs} gifs loaded")
 
-        gifFlow.value = gifs
+        if (gifs != null) {
+            gifFlow.value = gifs
+        }
         uiState.value = GifListUiState.Success(gifs = gifs)
     }
 
@@ -42,4 +44,6 @@ class GifListViewModel: ViewModel() {
             }
         }
     }
+
+
 }
