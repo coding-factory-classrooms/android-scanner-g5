@@ -93,8 +93,6 @@ class GifListViewModel: ViewModel() {
                 call: Call<VisionResponse?>,
                 response: Response<VisionResponse?>
             ) {
-                val visionResponse = response.body()!!
-                Log.i("package:mine", "onResponse: $visionResponse")
                 uiState.value = GifListUiState.Success(null)
             }
 
@@ -102,7 +100,6 @@ class GifListViewModel: ViewModel() {
                 call: Call<VisionResponse?>,
                 t: Throwable
             ) {
-                Log.e("package:mine", "onFailure: ", t)
                 uiState.value = GifListUiState.Failure("error")
             }
 
